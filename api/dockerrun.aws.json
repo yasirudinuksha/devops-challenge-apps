@@ -1,0 +1,8 @@
+{
+    "Ports": [
+      {
+        "ContainerPort": 80,
+        "HostPort": 3000
+      }
+    ]
+  }
