@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wa-api
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waapi
+  template:
+    metadata:
+      labels:
+        app: waapi
+    spec:
+      containers:
+        - name: waapi
+          image: crwaintldevcus.azurecr.io/wa-api
+          env:
+            - name: DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB
+          ports:
+            - containerPort: 5000
+
