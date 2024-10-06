@@ -1,0 +1,24 @@
+# Use the latest Node.js LTS image
+FROM node:18
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the package.json and package-lock.json files
+COPY package.json ./
+
+# Install the dependencies
+RUN npm install
+
+# Copy the entire API source code to the working directory in the container
+COPY . .
+
+# Set environment variables (these will be overridden by docker-compose)
+ENV PORT=5000
+ENV DB="postgres://admin:sample1234@db:5432/waveapps_db"
+
+# Expose the port the API will run on
+EXPOSE 5000
+
+# Run the API
+CMD ["npm", "start"]
