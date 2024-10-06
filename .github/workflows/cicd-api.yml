@@ -52,19 +52,34 @@ jobs:
       # Checks out the repository this file is in
       - uses: actions/checkout@v4
 
+      # Build the Docker image locally using Docker and push to ACR
+      - name: Log in to ACR
+        run: |
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io \
+          -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} -f ${{ env.BUILD_CONTEXT }}dockerfile ${{ env.BUILD_CONTEXT }}
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
+
       # Logs in with your Azure credentials
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # - name: Azure login
+      #   uses: azure/login@v1.4.6
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         
 
       # Builds and pushes an image up to your Azure Container Registry
-      - name: Build and push image to ACR
-        run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file ${{ env.BUILD_CONTEXT }}dockerfile -g ${{ env.CR_RESOURCE_GROUP }} ${{ env.BUILD_CONTEXT }}
+      # - name: Build and push image to ACR
+      #   run: |
+      #     az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file ${{ env.BUILD_CONTEXT }}dockerfile -g ${{ env.CR_RESOURCE_GROUP }} ${{ env.BUILD_CONTEXT }}
 
   # deploy:
   #   permissions:
