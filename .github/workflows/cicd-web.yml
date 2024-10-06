@@ -32,6 +32,9 @@ name: Build and deploy an app to AKS
 on:
   push:
     branches: ["feature/create-web-cicd"]
+    paths: 
+      - 'web/**'
+
   workflow_dispatch:
 
 env:
