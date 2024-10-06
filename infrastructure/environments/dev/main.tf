@@ -28,6 +28,13 @@ module "database_rg" {
   tags    = local.tags
 }
 
+module "automation_rg" {
+  source  = "../../modules/azure/resource-group"
+  context = local.context
+  usage   = "automation"
+  tags    = local.tags
+}
+
 #Network resources
 
 module "virtual_network" {
@@ -53,6 +60,16 @@ module "application_subnet" {
   address_prefixes = [cidrsubnet(local.vnet_address_space, 8, 1)]
 }
 
+#Public IPs
+
+module "automation_vm_pip" {
+  source              = "../../modules/azure/public-ip"
+  allocation_method   = "Static"
+  context             = local.context
+  resource_group_name = module.network_rg.resource_group.name
+  usage               = "automation-vm"
+}
+
 module "db_subnet" {
   source               = "../../modules/azure/subnet"
   context              = local.context
@@ -62,6 +79,18 @@ module "db_subnet" {
   tags                 = local.tags
 
   address_prefixes = [cidrsubnet(local.vnet_address_space, 8, 2)]
+
+}
+
+module "automation_subnet" {
+  source               = "../../modules/azure/subnet"
+  context              = local.context
+  resource_group_name  = module.network_rg.resource_group.name
+  virtual_network_name = module.virtual_network.virtual_network.name
+  usage                = "automation"
+  tags                 = local.tags
+
+  address_prefixes = [cidrsubnet(local.vnet_address_space, 8, 3)]
 
 }
 
@@ -140,4 +169,21 @@ module "postgresql_private_endpoint" {
   usage                          = "psql"
 
   subresource_names = ["postgresqlServer"]
+}
+
+module "automation_vm" {
+  source               = "../../modules/azure/virtual-machine"
+  context              = local.context
+  resource_group_name  = module.automation_rg.resource_group.name
+  subnet_id            = module.automation_subnet.subnet.id
+  usage                = "automation"
+  vm_size              = "Standard_B1s"
+  image_offer          = "0001-com-ubuntu-server-jammy"
+  image_publisher      = "Canonical"
+  image_sku            = "22_04-lts"
+  image_version        = "latest"
+  admin_username       = "waadmin"
+  computer_name        = "wa-automation"
+  admin_password       = var.automation_vm_pw
+  public_ip_address_id = module.automation_vm_pip.public_ip.id
 }
