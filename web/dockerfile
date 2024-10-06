@@ -1,0 +1,19 @@
+FROM node:latest
+
+#setup workdirectory
+WORKDIR /app 
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Expose the port on which the web application will run
+EXPOSE 5000
+
+# this will be overriden by kubernetes configmaps
+ENV PORT=5000
+
+# Start the application
+CMD ["npm", "start"]
