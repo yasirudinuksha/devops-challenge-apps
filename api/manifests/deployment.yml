@@ -16,6 +16,12 @@ spec:
       containers:
         - name: waapi
           image: crwaintldevcus.azurecr.io/wa-api
+          env:
+            - name: DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB
           ports:
             - containerPort: 5000
 
