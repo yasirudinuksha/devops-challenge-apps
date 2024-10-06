@@ -31,7 +31,13 @@ name: Build and deploy an app to AKS
 
 on:
   push:
-    branches: ["feature/create-cicd-pipeline-api"]
+    branches: ["dev"]
+    paths: 
+      - 'api/**'
+  
+  pull_request:
+    branches: ["dev"]
+
   workflow_dispatch:
 
 env:
