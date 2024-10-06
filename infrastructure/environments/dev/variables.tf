@@ -9,3 +9,5 @@ variable "azure_sp_password" {}
 variable "psql_administrator_login" {}
 
 variable "psql_administrator_password" {}
+
+variable "automation_vm_pw" {}
