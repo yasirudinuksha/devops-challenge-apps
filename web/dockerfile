@@ -1,6 +1,7 @@
 FROM node:latest
 
-WORKDIR /app
+#setup workdirectory
+WORKDIR /app 
 
 COPY package*.json ./
 
