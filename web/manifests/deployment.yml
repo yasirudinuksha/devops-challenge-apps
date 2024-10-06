@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wa-web
+  namespace: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waweb
+  template:
+    metadata:
+      labels:
+        app: waweb
+    spec:
+      containers:
+        - name: waweb
+          image: crwaintldevcus.azurecr.io/wa-web
+          env:
+            - name: API_HOST
+              value: "http://wa-api.backend.svc.cluster.local"
+          ports:
+            - containerPort: 5000
+
