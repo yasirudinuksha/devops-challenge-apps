@@ -60,7 +60,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} -f ${{ env.BUILD_CONTEXT }}dockerfile ${{ env.BUILD_CONTEXT }}
+          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }} -f ${{ env.BUILD_CONTEXT }}Dockerfile ${{ env.BUILD_CONTEXT }}
 
       - name: Push Docker image to ACR
         run: |
