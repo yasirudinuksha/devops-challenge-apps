@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wa-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waapi
+  template:
+    metadata:
+      labels:
+        app: waapi
+    spec:
+      containers:
+        - name: waapi
+          image: crwaintldevcus.azurecr.io/wa-api
+          ports:
+            - containerPort: 5000
+
